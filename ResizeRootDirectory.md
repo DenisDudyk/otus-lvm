@@ -1,7 +1,9 @@
 sudo su
+
 yum install xfsdump -y
 
 lsblk
+
 ```
 NAME                    MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 sda                       8:0    0   40G  0 disk 
@@ -17,21 +19,25 @@ sde                       8:64   0    1G  0 disk
 ```
 
 pvcreate /dev/sdb
+
 ```
 Physical volume "/dev/sdb" successfully created.
 ```
 
 vgcreate vg_tmp_root /dev/sdb
+
 ```
 Volume group "vg_tmp_root" successfully created
 ```
 
 lvcreate -n lv_tmp_root -L 8G vg_tmp_root
+
 ```
 Logical volume "lv_tmp_root" created.
 ```
 
 lsblk
+
 ```
 NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 sda                         8:0    0   40G  0 disk 
@@ -48,6 +54,7 @@ sde                         8:64   0    1G  0 disk
 ```
 
 mkfs.xfs /dev/vg_tmp_root/lv_tmp_root 
+
 ```
 meta-data=/dev/vg_tmp_root/lv_tmp_root isize=512    agcount=4, agsize=524288 blks
          =                       sectsz=512   attr=2, projid32bit=1
@@ -62,9 +69,11 @@ realtime =none                   extsz=4096   blocks=0, rtextents=0
 
 
 mkdir /mnt/root_tmp/
+
 mount /dev/vg_tmp_root/lv_tmp_root /mnt/root_tmp/
 
 xfsdump -J - /dev/VolGroup00/LogVol00 | xfsrestore -J - /mnt/root_tmp/
+
 ```
 xfsdump: using file dump (drive_simple) strategy
 xfsdump: version 3.1.7 (dump format 3.0)
@@ -73,16 +82,19 @@ xfsrestore: Restore Status: SUCCESS
 ```
 
 ls /mnt/root_tmp/
+
 ```
 bin  boot  dev  etc  home  lib  lib64  media  mnt  opt  proc  root  run  sbin  srv  sys  tmp  usr  vagrant  var
 ```
 
 for i in /proc/ /sys/ /dev/ /run/ /boot/; do mount --bind $i /mnt/root_tmp$i; done
+
 chroot /mnt/root_tmp/
 
 > Новый загрузчик
 
 grub2-mkconfig -o /boot/grub2/grub.config
+
 ```
 Generating grub configuration file ...
 Found linux image: /boot/vmlinuz-3.10.0-862.2.3.el7.x86_64
@@ -93,6 +105,7 @@ done
 > Обновим образы загрузки
 
 cd /boot ; for i in `ls initramfs-*img`; do dracut -v $i `echo $i|sed "s/initramfs-//g; s/.img//g"` --force; done
+
 ```
 Executing: /sbin/dracut -v initramfs-3.10.0-862.2.3.el7.x86_64.img 3.10.0-862.2.3.el7.x86_64 --force
 dracut module 'busybox' will not be installed, because command 'busybox' could not be found!
@@ -110,6 +123,7 @@ vi /boot/grub2/grub.cfg
 
 
 exit 
+
 reboot
 
 _______________________________________________________________________________
@@ -117,6 +131,7 @@ _______________________________________________________________________________
 sudo su
 
 lsblk
+
 ```
 NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 sda                         8:0    0   40G  0 disk 
@@ -133,12 +148,14 @@ sde                         8:64   0    1G  0 disk
 ```
 
 lvremove /dev/VolGroup00/LogVol00 
+
 ```
 Do you really want to remove active logical volume VolGroup00/LogVol00? [y/n]: y
 Logical volume "LogVol00" successfully removed
 ```
 
 lvcreate -n LogVol00 -L 8G VolGroup00
+
 ```
 WARNING: xfs signature detected on /dev/VolGroup00/LogVol00 at offset 0. Wipe it? [y/n]: y
   Wiping xfs signature on /dev/VolGroup00/LogVol00.
@@ -146,6 +163,7 @@ WARNING: xfs signature detected on /dev/VolGroup00/LogVol00 at offset 0. Wipe it
 ```
 
 mkfs.xfs /dev/VolGroup00/LogVol00
+
 ```
 meta-data=/dev/VolGroup00/LogVol00 isize=512    agcount=4, agsize=524288 blks
          =                       sectsz=512   attr=2, projid32bit=1
@@ -161,6 +179,7 @@ realtime =none                   extsz=4096   blocks=0, rtextents=0
 mount /dev/VolGroup00/LogVol00 /mnt/root_tmp/
 
 xfsdump -J - /dev/vg_tmp_root/lv_tmp_root | xfsrestore -J - /mnt/root_tmp/
+
 ```
 xfsrestore: using file dump (drive_simple) strategy
 xfsrestore: version 3.1.7 (dump format 3.0)
@@ -177,6 +196,7 @@ for i in /proc/ /sys/ /dev/ /run/ /boot/; do mount --bind $i /mnt/root_tmp$i; do
 chroot /mnt/root_tmp/
 
 grub2-mkconfig -o /boot/grub2/grub.cfg
+
 ```
 Generating grub configuration file ...
 Found linux image: /boot/vmlinuz-3.10.0-862.2.3.el7.x86_64
@@ -185,6 +205,7 @@ done
 ```
 
 cd /boot ; for i in `ls initramfs-*img`; do dracut -v $i `echo $i|sed "s/initramfs-//g; s/.img//g"` --force; done
+
 ```
 Executing: /sbin/dracut -v initramfs-3.10.0-862.2.3.el7.x86_64.img 3.10.0-862.2.3.el7.x86_64 --force
 dracut module 'busybox' will not be installed, because command 'busybox' could not be found!
@@ -203,11 +224,13 @@ vi /boot/grub2/grub.cfg
 
 
 exit
+
 reboot
 
 _______________________________________________________________________________
 
 lsblk
+
 ```
 NAME                      MAJ:MIN RM  SIZE RO TYPE MOUNTPOINT
 sda                         8:0    0   40G  0 disk 
@@ -225,17 +248,20 @@ sde                         8:64   0    1G  0 disk
 sudo su
 
 lvremove /dev/vg_tmp_root/lv_tmp_root
+
 ```
 Do you really want to remove active logical volume vg_tmp_root/lv_tmp_root? [y/n]: y
 Logical volume "lv_tmp_root" successfully removed
 ```
 
 vgremove vg_tmp_root
+
 ```
 Volume group "vg_tmp_root" successfully removed
 ```
 
 pvremove /dev/sdb
+
 ```
 Labels on physical volume "/dev/sdb" successfully wiped.
 ```

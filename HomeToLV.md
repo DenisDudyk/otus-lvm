@@ -54,6 +54,7 @@ echo "/dev/VolGroup00/home /home/ ext4 defaults 0 2" >> /etc/fstab
 > Проверим
 
 umount /home/
+
 ls -la /home/
 
 ```
@@ -63,6 +64,7 @@ drwxr-xr-x. 18 root root 239 Oct 13 16:56 ..
 ```
 
 mount -a
+
 ls -la /home/
 
 ```
