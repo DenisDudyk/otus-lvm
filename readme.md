@@ -4,7 +4,7 @@
 /dev/mapper/VolGroup00-LogVol00 38G 738M 37G 2% /
 
 1. Уменьшить том под / до 8G [ResizeRootDirectory.md](https://github.com/DenisDudyk/otus-lvm/blob/main/ResizeRootDirectory.md)
-2. выделить том под /home
+2. выделить том под /home [HomeToLv.md](https://github.com/DenisDudyk/otus-lvm/blob/main/HomeToLv.md)
 3. выделить том под /var и сделать в mirror
 4. /home - сделать том для снэпшотов
 5. прописать монтирование в fstab, попробовать с разными опциями и разными файловыми системами ( на выбор)
