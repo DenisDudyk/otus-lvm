@@ -43,7 +43,7 @@ umount /mnt/var_tmp/
 
 mount /dev/vg_mirror/lv_mirror /var/
 
-> Пропишим монтирование при старте системы
+> Пропишем монтирование при старте системы
 
 echo "/dev/mapper/vg_mirror-lv_mirror /var/ ext4 defaults 0 2" >> /etc/fstab
 
