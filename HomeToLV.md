@@ -49,6 +49,8 @@ sdd                       8:48   0    1G  0 disk
 sde 
 ```
 
+> Пропишим монтирование при старте системы
+
 echo "/dev/VolGroup00/home /home/ ext4 defaults 0 2" >> /etc/fstab
 
 > Проверим
